@@ -1,23 +1,13 @@
 package com.onboard.backend.service;
 
 import com.onboard.backend.entity.User;
-import com.onboard.backend.repository.UserRepository;
+import java.util.List;
 
-public class UserService {
+public interface UserService {
+    public String createUser(User user);
 
-    private final UserRepository userRepository;
+    public User getUserDetails(Long id);
 
-    public UserService(UserRepository userRepository) {
-        this.userRepository = userRepository;
-    }
-
-    public User createUser(User user) {
-        // Validate user data
-        // Hash password
-        // Perform additional processing
-        return userRepository.save(user);
-    }
-
-    // Other methods for user management
+    public List<User> getAllUsers();
 
 }

@@ -1,29 +1,40 @@
 package com.onboard.backend.controller;
 
-
 import com.onboard.backend.entity.User;
 import com.onboard.backend.service.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+
+// import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
+@RequestMapping("/user")
 public class UserController {
 
-    @Autowired
-    private UserService userService;
+    UserService userService;
 
-    @PostMapping("/users")
-    public ResponseEntity<User> createUser(@RequestBody User user) {
-        try {
-            User createdUser = userService.createUser(user);
-            return new ResponseEntity<>(createdUser, HttpStatus.CREATED);
-        } catch (Exception e) {
-            // Handle exceptions gracefully (e.g., log, return error response)
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+    // private BCryptPasswordEncoder passwordEncoder;
+
+    public UserController(UserService userService) {
+        this.userService = userService;
+    }
+
+    @GetMapping("{id}")
+    public User getDetails(@PathVariable("id") Long id) {
+        return userService.getUserDetails(id);
+    }
+
+    @PostMapping("/create")
+    public String createDetails(@RequestBody User user) {
+        // String encryptedPassword = passwordEncoder.encode(user.getPassword());
+        // user.setPassword(encryptedPassword);
+        userService.createUser(user);
+        return "User created";
+    }
+
+    @GetMapping()
+    public List<User> getAllUserDetails() {
+        return userService.getAllUsers();
     }
 }
