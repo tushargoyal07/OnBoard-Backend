@@ -8,9 +8,12 @@ public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
+    @Column(nullable = false)
     private String firstname;
     private String lastname;
+    @Column(nullable = false)
     private String email;
+    @Column(nullable = false)
     private String password;
 
     public User() {

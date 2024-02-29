@@ -1,13 +1,13 @@
 package com.onboard.backend.service;
 
-import com.onboard.backend.entity.User;
+import com.onboard.backend.dto.UserDto;
 import java.util.List;
 
 public interface UserService {
-    public String createUser(User user);
+    public UserDto createUser(UserDto user);
 
-    public User getUserDetails(Long id);
+    public UserDto getUserById(Long id);
 
-    public List<User> getAllUsers();
+    public List<UserDto> getAllUsers();
 
 }
