@@ -29,6 +29,12 @@ public class AuthController {
     }
 
     // login
+    /*
+    * check mail present
+    * password match
+    * token generation
+    * return token
+    */
     // @PostMapping("/login")
     // public ResponseEntity<String> login(@RequestBody UserDto userDto) {
     // return new ResponseEntity<>(authService.createUser(userDto),
