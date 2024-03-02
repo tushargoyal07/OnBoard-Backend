@@ -33,7 +33,7 @@ public class UserServiceImpl implements UserService {
         @SuppressWarnings("null")
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new UserNotFoundException("User with this id does not exist"));
-        return convertToDto(user);
+        return convertToDtoWithoutPassword(user);
     }
 
     @Override
@@ -76,6 +76,17 @@ public class UserServiceImpl implements UserService {
 
     public UserDto convertToDto(User user) {
         return this.modelMapper.map(user, UserDto.class);
+    }
+
+    private UserDto convertToDtoWithoutPassword(User user){
+        UserDto userDto = modelMapper.map(user, UserDto.class);
+        UserDto dtoWithoutPassword = new UserDto();
+        dtoWithoutPassword.setId(userDto.getId());
+        dtoWithoutPassword.setFirstname(userDto.getFirstname());
+        dtoWithoutPassword.setLastname(userDto.getLastname());
+        dtoWithoutPassword.setEmail(userDto.getEmail());
+        dtoWithoutPassword.setPassword(null);
+        return dtoWithoutPassword;
     }
 
 }

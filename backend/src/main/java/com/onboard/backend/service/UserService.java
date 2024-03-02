@@ -14,10 +14,4 @@ public interface UserService {
     public void deleteUser(Long id);
 
 }
-/*
- * in this we will create,
- * -update
- * -delete
- * -get
- * -get all
- */
+
