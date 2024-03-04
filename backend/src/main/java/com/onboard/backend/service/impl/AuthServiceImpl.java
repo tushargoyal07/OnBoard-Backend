@@ -35,4 +35,41 @@ public class AuthServiceImpl implements AuthService {
     return "User created successfully";
   }
 
+  @Override
+  public String signIn(String email, String password) {
+    User user = userRepository.findByEmail(email);
+    if (passwordEncoder.matches(password, user.getPassword())) {
+      return "Logged In Successfully";
+    }
+    return null;
+  }
+
+  // @Override
+  // public String signIn(String email, String password) {
+  //       // Retrieve user from the database based on email
+  //       User user = userRepository.findByEmail(email);
+
+  //       // Check if user exists
+  //       if (user == null) {
+  //           throw new RuntimeException("User not found");
+  //       }
+
+  //       // Check if provided password matches stored password
+  //       if (!passwordEncoder.matches(password, user.getPassword())) {
+  //           throw new RuntimeException("Invalid password");
+  //       }
+
+  //       // Generate JWT token (implement this logic)
+  //       // String jwtToken = generateJwtToken(user);
+  //       return "Logged In Successfully";
+  //       // return jwtToken;
+  //   }
+
+    // private String generateJwtToken(User user) {
+    //     // Implement JWT token generation logic here
+    //     // Example: JWT.create().withSubject(user.getEmail()).sign(Algorithm.HMAC256("secret"));
+    //     return "JWT_TOKEN";
+    // }
+
+
 }
