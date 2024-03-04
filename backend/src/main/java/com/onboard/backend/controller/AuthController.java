@@ -1,5 +1,6 @@
 package com.onboard.backend.controller;
 
+import com.onboard.backend.dto.LoginDto;
 import com.onboard.backend.dto.UserDto;
 import com.onboard.backend.service.AuthService;
 
@@ -30,19 +31,39 @@ public class AuthController {
 
     // login
     /*
-    * check mail present
-    * password match
-    * token generation
-    * return token
-    */
-    // @PostMapping("/login")
-    // public ResponseEntity<String> login(@RequestBody UserDto userDto) {
-    // return new ResponseEntity<>(authService.createUser(userDto),
-    // HttpStatus.CREATED);
-    // }
+     * check mail present
+     * password match
+     * token generation
+     * return token
+     */
+    @PostMapping("/sign-in")
+    public ResponseEntity<String> signIn(@RequestBody LoginDto loginDto) {
+        String email = loginDto.getEmail();
+        String password = loginDto.getPassword(); 
+        String token = authService.signIn(email ,password);
+        if (token != null) {
+            return new ResponseEntity<>(token, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>("Invalid credentials", HttpStatus.UNAUTHORIZED);
+        }
+        
+
+        // try {
+        //     String jwtToken = authService.signIn(email, password);
+        //     return ResponseEntity.ok(jwtToken);
+        // } catch (RuntimeException e) {
+        //     return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(e.getMessage());
+        // }
+
+
+    }
 
     // google auth
 
     // log out
 
 }
+
+// google auth
+
+// log out
