@@ -1,5 +1,7 @@
 package com.onboard.backend.service.impl;
 
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -10,66 +12,65 @@ import com.onboard.backend.entity.User;
 import com.onboard.backend.repository.UserRepository;
 import com.onboard.backend.service.AuthService;
 
+import java.security.Key;
+import java.util.Date;
+
 @Service
 public class AuthServiceImpl implements AuthService {
 
-  @Autowired
-  UserRepository userRepository;
+    @Autowired
+    UserRepository userRepository;
 
-  @Autowired
-  ModelMapper modelMapper;
+    @Autowired
+    ModelMapper modelMapper;
 
-  @Autowired
-  BCryptPasswordEncoder passwordEncoder;
+    @Autowired
+    BCryptPasswordEncoder passwordEncoder;
 
-  public AuthServiceImpl(UserRepository userRepository) {
-    this.userRepository = userRepository;
-  }
+    @Autowired
+    private Key jwtSecretKey;
 
-  @Override
-  public String createUser(UserDto userDto) {
-    User newUser = this.modelMapper.map(userDto, User.class);
-    String encryptedPassword = passwordEncoder.encode(newUser.getPassword());
-    newUser.setPassword(encryptedPassword);
-    userRepository.save(newUser);
-    return "User created successfully";
-  }
+    @Autowired
+    private long jwtExpirationMs;
 
-  @Override
-  public String signIn(String email, String password) {
-    User user = userRepository.findByEmail(email);
-    if (passwordEncoder.matches(password, user.getPassword())) {
-      return "Logged In Successfully";
+    public AuthServiceImpl(UserRepository userRepository) {
+        this.userRepository = userRepository;
     }
-    return null;
-  }
 
-  // @Override
-  // public String signIn(String email, String password) {
-  //       // Retrieve user from the database based on email
-  //       User user = userRepository.findByEmail(email);
+    @Override
+    public String createUser(UserDto userDto) {
+        User newUser = this.modelMapper.map(userDto, User.class);
+        String encryptedPassword = passwordEncoder.encode(newUser.getPassword());
+        newUser.setPassword(encryptedPassword);
+        userRepository.save(newUser);
+        return "User created successfully";
+    }
 
-  //       // Check if user exists
-  //       if (user == null) {
-  //           throw new RuntimeException("User not found");
-  //       }
+    @Override
+    public String signIn(String email, String password) {
+        // Retrieve user from the database based on email
+        User user = userRepository.findByEmail(email);
 
-  //       // Check if provided password matches stored password
-  //       if (!passwordEncoder.matches(password, user.getPassword())) {
-  //           throw new RuntimeException("Invalid password");
-  //       }
+        // Check if user exists
+        if (user == null) {
+            throw new RuntimeException("User not found");
+        }
 
-  //       // Generate JWT token (implement this logic)
-  //       // String jwtToken = generateJwtToken(user);
-  //       return "Logged In Successfully";
-  //       // return jwtToken;
-  //   }
+        // Check if provided password matches stored password
+        if (!passwordEncoder.matches(password, user.getPassword())) {
+            throw new RuntimeException("Invalid password");
+        }
 
-    // private String generateJwtToken(User user) {
-    //     // Implement JWT token generation logic here
-    //     // Example: JWT.create().withSubject(user.getEmail()).sign(Algorithm.HMAC256("secret"));
-    //     return "JWT_TOKEN";
-    // }
+        // Generate JWT token (implement this logic)
+        return generateJwtToken(user);
+    }
 
-
+    private String generateJwtToken(User user) {
+        return Jwts.builder()
+                .setSubject(user.getEmail())
+                .setIssuedAt(new Date())
+                .setExpiration(new Date(System.currentTimeMillis() + jwtExpirationMs))
+                .signWith(jwtSecretKey, SignatureAlgorithm.HS256)
+                .compact();
+    }
 }
