@@ -46,16 +46,6 @@ public class AuthController {
         } else {
             return new ResponseEntity<>("Invalid credentials", HttpStatus.UNAUTHORIZED);
         }
-        
-
-        // try {
-        //     String jwtToken = authService.signIn(email, password);
-        //     return ResponseEntity.ok(jwtToken);
-        // } catch (RuntimeException e) {
-        //     return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(e.getMessage());
-        // }
-
-
     }
 
     // google auth

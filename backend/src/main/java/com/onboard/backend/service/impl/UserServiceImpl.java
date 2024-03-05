@@ -78,7 +78,7 @@ public class UserServiceImpl implements UserService {
         return this.modelMapper.map(user, UserDto.class);
     }
 
-    private UserDto convertToDtoWithoutPassword(User user){
+    private UserDto convertToDtoWithoutPassword(User user) {
         UserDto userDto = modelMapper.map(user, UserDto.class);
         UserDto dtoWithoutPassword = new UserDto();
         dtoWithoutPassword.setId(userDto.getId());
