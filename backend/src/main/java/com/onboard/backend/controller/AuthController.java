@@ -13,7 +13,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@CrossOrigin(origins = "http://localhost:3000")
 @RequestMapping("/api/auth")
 public class AuthController {
 
@@ -31,12 +30,6 @@ public class AuthController {
     }
 
     // login
-    /*
-     * check mail present
-     * password match
-     * token generation
-     * return token
-     */
     @PostMapping("/sign-in")
     public ResponseEntity<String> signIn(@RequestBody LoginDto loginDto, HttpServletResponse response) {
         String email = loginDto.getEmail();
@@ -60,9 +53,4 @@ public class AuthController {
     // google auth
 
     // log out
-
 }
-
-// google auth
-
-// log out
