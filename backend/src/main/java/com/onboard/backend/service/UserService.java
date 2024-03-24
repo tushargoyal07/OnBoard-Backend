@@ -4,6 +4,9 @@ import com.onboard.backend.dto.UserDto;
 
 import java.util.List;
 
+import org.springframework.stereotype.Service;
+
+@Service
 public interface UserService {
 
     public UserDto updateUser(Long id, UserDto user);
@@ -15,4 +18,3 @@ public interface UserService {
     public void deleteUser(Long id);
 
 }
-

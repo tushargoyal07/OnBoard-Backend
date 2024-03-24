@@ -49,6 +49,7 @@ public class UserDto {
     public void setPassword(String password) {
         this.password = password;
     }
+
 //    public UserDto(Long id, String firstname, String lastname, String email, String password) {
 //        this.id = id;
 //        this.firstname = firstname;
