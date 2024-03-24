@@ -4,15 +4,16 @@ import com.onboard.backend.dto.LoginDto;
 import com.onboard.backend.dto.UserDto;
 import com.onboard.backend.service.AuthService;
 
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletResponse;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
+@CrossOrigin(origins = "http://localhost:3000")
 @RequestMapping("/api/auth")
 public class AuthController {
 
@@ -37,12 +38,20 @@ public class AuthController {
      * return token
      */
     @PostMapping("/sign-in")
-    public ResponseEntity<String> signIn(@RequestBody LoginDto loginDto) {
+    public ResponseEntity<String> signIn(@RequestBody LoginDto loginDto, HttpServletResponse response) {
         String email = loginDto.getEmail();
-        String password = loginDto.getPassword(); 
-        String token = authService.signIn(email ,password);
+        String password = loginDto.getPassword();
+        String token = authService.signIn(email, password);
+
         if (token != null) {
-            return new ResponseEntity<>(token, HttpStatus.OK);
+            Cookie cookie = new Cookie("access_token", token);
+            cookie.setMaxAge(24 * 60 * 60);
+            cookie.setHttpOnly(true);
+            cookie.setPath("/");
+
+            response.addCookie(cookie);
+
+            return new ResponseEntity<>("Login Successful", HttpStatus.OK);
         } else {
             return new ResponseEntity<>("Invalid credentials", HttpStatus.UNAUTHORIZED);
         }
