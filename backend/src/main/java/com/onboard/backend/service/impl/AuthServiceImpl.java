@@ -1,9 +1,10 @@
 package com.onboard.backend.service.impl;
 
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.*;
+import io.jsonwebtoken.security.Keys;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -32,11 +33,11 @@ public class AuthServiceImpl implements AuthService {
     @Autowired
     BCryptPasswordEncoder passwordEncoder;
 
-    @Autowired
-    private Key jwtSecretKey;
-
-    @Autowired
+    @Value("${jwt.expiration.ms}")
     private long jwtExpirationMs;
+
+    @Value("${jwt.secret}")
+    private String jwtSecretKey;
 
     public AuthServiceImpl(UserRepository userRepository) {
         this.userRepository = userRepository;
@@ -72,26 +73,24 @@ public class AuthServiceImpl implements AuthService {
         // Retrieve user from the database based on email
         User user = userRepository.findByEmail(email);
 
-        // Check if user exists
         if (user == null) {
             throw new RuntimeException("User not found");
         }
 
-        // Check if provided password matches stored password
         if (!passwordEncoder.matches(password, user.getPassword())) {
             throw new RuntimeException("Invalid password");
         }
 
-        // Generate JWT token (implement this logic)
-        return generateJwtToken(user);
+        return generateAccessToken(user.getId());
     }
 
-    private String generateJwtToken(User user) {
+    private String generateAccessToken(Long userId) {
+        Key key = Keys.hmacShaKeyFor(jwtSecretKey.getBytes());
         return Jwts.builder()
-                .setSubject(user.getEmail())
-                .setIssuedAt(new Date())
+                .setSubject(userId.toString())
                 .setExpiration(new Date(System.currentTimeMillis() + jwtExpirationMs))
-                .signWith(jwtSecretKey, SignatureAlgorithm.HS256)
+                .signWith(key, SignatureAlgorithm.HS256)
                 .compact();
     }
+
 }

@@ -5,6 +5,7 @@ import com.onboard.backend.dto.UserDto;
 import com.onboard.backend.service.AuthService;
 
 import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,7 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@CrossOrigin(origins = "http://localhost:3000")
+//@CrossOrigin(origins = "http://localhost:3000")
 @RequestMapping("/api/auth")
 public class AuthController {
 
@@ -30,15 +31,8 @@ public class AuthController {
         return new ResponseEntity<>(authService.createUser(userDto), HttpStatus.CREATED);
     }
 
-    // login
-    /*
-     * check mail present
-     * password match
-     * token generation
-     * return token
-     */
     @PostMapping("/sign-in")
-    public ResponseEntity<String> signIn(@RequestBody LoginDto loginDto, HttpServletResponse response) {
+    public ResponseEntity<String> signIn(@RequestBody LoginDto loginDto,  HttpServletResponse response) {
         String email = loginDto.getEmail();
         String password = loginDto.getPassword();
         String token = authService.signIn(email, password);
@@ -48,18 +42,12 @@ public class AuthController {
             cookie.setMaxAge(24 * 60 * 60);
             cookie.setHttpOnly(true);
             cookie.setPath("/");
-
             response.addCookie(cookie);
-
             return new ResponseEntity<>("Login Successful", HttpStatus.OK);
         } else {
             return new ResponseEntity<>("Invalid credentials", HttpStatus.UNAUTHORIZED);
         }
     }
-
-    // google auth
-
-    // log out
 
 }
 

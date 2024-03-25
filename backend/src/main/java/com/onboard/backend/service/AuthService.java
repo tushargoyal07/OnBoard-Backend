@@ -1,6 +1,7 @@
 package com.onboard.backend.service;
 
 import com.onboard.backend.dto.UserDto;
+import jakarta.servlet.http.HttpServletRequest;
 
 public interface AuthService {
 
